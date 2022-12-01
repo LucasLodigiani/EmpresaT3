@@ -15,6 +15,7 @@
             <th>@Html.DisplayNameFor(model => model.ProfilePicture)</th>
             <th>@Html.DisplayNameFor(model => model.Nombre)</th>
             <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
+            <th>@Html.DisplayNameFor(model => model.Categoria)</th>
             <th>@Html.DisplayNameFor(model => model.Precio)</th>
             <th>Acciones</th>
         </tr>
@@ -30,6 +31,7 @@
                 </td>
                 <td>@item.Nombre</td>
                 <td>@item.Descripcion</td>
+                <td>@item.Categoria</td>
                 <td>@item.Precio</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info rounded-0">Editar<i class="fa fa-pencil-alt"></i></a>

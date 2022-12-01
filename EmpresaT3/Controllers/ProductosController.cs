@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using EmpresaT3.Models;
 using EmpresaT3.Data;
 using EmpresaT3.ViewModels;
+using System.Dynamic;
+using System.Collections.Generic;
 
 namespace EmpresaT3.Controllers
 {
@@ -44,6 +46,7 @@ namespace EmpresaT3.Controllers
                     Id = product.Id,
                     Nombre = product.Nombre,
                     Descripcion = product.Descripcion,
+                    Categoria = product.Categoria,
                     Precio = product.Precio,
                     ExistingImage = product.ProfilePicture
                 };
@@ -61,8 +64,9 @@ namespace EmpresaT3.Controllers
             }
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> CreateAsync()
         {
+            ViewBag.Categoria = await _context.Category.ToListAsync();
             return View();
         }
 
@@ -80,6 +84,7 @@ namespace EmpresaT3.Controllers
                     {
                         Nombre = model.Nombre,
                         Descripcion = model.Descripcion,
+                        Categoria = model.Categoria,
                         Precio = model.Precio,
                         ProfilePicture = uniqueFileName
                     };
@@ -110,6 +115,7 @@ namespace EmpresaT3.Controllers
                 Id = product.Id,
                 Nombre = product.Nombre,
                 Descripcion = product.Descripcion,
+                Categoria = product.Categoria,
                 Precio = product.Precio,
                 ExistingImage = product.ProfilePicture
             };
@@ -130,6 +136,7 @@ namespace EmpresaT3.Controllers
                 var product = await _context.Productos.FindAsync(model.Id);
                 product.Nombre = model.Nombre;
                 product.Descripcion = model.Descripcion;
+                product.Categoria = model.Categoria;
                 product.Precio = model.Precio;
 
                 if (model.ProductPicture != null)
@@ -164,6 +171,7 @@ namespace EmpresaT3.Controllers
                 Id = product.Id,
                 Nombre = product.Nombre,
                 Descripcion = product.Descripcion,
+                Categoria = product.Categoria,
                 Precio = product.Precio,
                 ExistingImage = product.ProfilePicture
             };

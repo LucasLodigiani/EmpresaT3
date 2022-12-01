@@ -10,11 +10,14 @@ namespace EmpresaT3.Models
 
         [Required]
         [StringLength(100)]
-        [Display(Name = "Name")]
+        [Display(Name = "Nombre")]
         public string Nombre { get; set; }
 
         [Required]
         public string Descripcion { get; set; }
+
+        [Required]
+        public string Categoria { get; set; }
 
         [Required]
         public float Precio { get; set; }
