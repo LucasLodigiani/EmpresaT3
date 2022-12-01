@@ -124,6 +124,9 @@ namespace EmpresaT3.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Categoria = await _context.Category.ToListAsync();
+
+
             return View(productViewModel);
         }
 
@@ -131,28 +134,37 @@ namespace EmpresaT3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ProductoViewModel model)
         {
-            if (ModelState.IsValid)
+
+            try
             {
-                var product = await _context.Productos.FindAsync(model.Id);
-                product.Nombre = model.Nombre;
-                product.Descripcion = model.Descripcion;
-                product.Categoria = model.Categoria;
-                product.Precio = model.Precio;
-
-                if (model.ProductPicture != null)
+                if (ModelState.IsValid)
                 {
-                    if (model.ExistingImage != null)
-                    {
-                        string filePath = Path.Combine(_environment.WebRootPath, "Uploads", model.ExistingImage);
-                        System.IO.File.Delete(filePath);
-                    }
+                    var product = await _context.Productos.FindAsync(model.Id);
+                    product.Nombre = model.Nombre;
+                    product.Descripcion = model.Descripcion;
+                    product.Categoria = model.Categoria;
+                    product.Precio = model.Precio;
 
-                    product.ProfilePicture = ProcessUploadedFile(model);
+                    if (model.ProductPicture != null)
+                    {
+                        if (model.ExistingImage != null)
+                        {
+                            string filePath = Path.Combine(_environment.WebRootPath, "Uploads", model.ExistingImage);
+                            System.IO.File.Delete(filePath);
+                        }
+
+                        product.ProfilePicture = ProcessUploadedFile(model);
+                    }
+                    _context.Update(product);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                _context.Update(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
+            catch(Exception)
+            {
+                throw;
+            }
+
             return View();
         }
 
