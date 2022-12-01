@@ -6,6 +6,23 @@
 
 <h3 class="text-center text-uppercase">Lista de Productos</h3>
 
+<form>
+    <!--Busqueda por nombre-->
+    <label>Filtrar por nombre: </label>
+    <input type="text" name="searchByName" />
+    <!--Busqueda por categoria-->
+    <br/>
+    <label>Filtrar por categoría</label>
+    <select name="searchByCategory">
+        <option value="">Todos</option>
+        @foreach (var item in ViewBag.Categoria)
+        {
+            <option value="@item.Categorias">@item.Categorias</option>
+        }
+    </select>
+    <input type="submit" value="Buscar" />
+</form>
+
 <p>
     <a asp-action="Create" class="btn btn-primary rounded-0"><i class="fa fa-plus-circle"></i><strong>+</strong>Agregar</a>
 </p>

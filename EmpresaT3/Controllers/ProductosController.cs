@@ -24,9 +24,29 @@ namespace EmpresaT3.Controllers
             _environment = environment;
         }
 
-        public async Task<IActionResult> Index()
+        //HACER CONDICIONAL DE IF ELSE EN EL RETURN LISTASYNC PARA CADA PRODUCTO
+        public async Task<IActionResult> Index(string searchByName, string searchByCategory)
         {
-            return View(await _context.Productos.ToListAsync());
+            if(_context.Productos == null)
+            {
+                return Problem("Entity error set");
+            }
+            //METODO LINQ PARA OBTENER LOS PRODUCTOS, SOLO SE OBTIENE UNA VEZ
+            var products = from p in _context.Productos select p;
+
+            if (!String.IsNullOrEmpty(searchByName) && !String.IsNullOrEmpty(searchByCategory))
+            {
+                products = products.Where(x => x.Nombre!.Contains(searchByName) && x.Categoria!.Contains(searchByCategory));
+            }
+
+            if (!String.IsNullOrEmpty(searchByName) || !String.IsNullOrEmpty(searchByCategory))
+            {
+                products = products.Where(x => x.Nombre!.Contains(searchByName) || x.Categoria!.Contains(searchByCategory));
+            }
+
+            ViewBag.Categoria = await _context.Category.ToListAsync();
+
+            return View(await products.ToListAsync());
         }
 
         public async Task<IActionResult> Details(int? id)
