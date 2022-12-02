@@ -10,6 +10,7 @@ using EmpresaT3.Data;
 using EmpresaT3.ViewModels;
 using System.Dynamic;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmpresaT3.Controllers
 {
@@ -24,7 +25,6 @@ namespace EmpresaT3.Controllers
             _environment = environment;
         }
 
-        //HACER CONDICIONAL DE IF ELSE EN EL RETURN LISTASYNC PARA CADA PRODUCTO
         public async Task<IActionResult> Index(string searchByName, string searchByCategory)
         {
             if(_context.Productos == null)
@@ -43,6 +43,7 @@ namespace EmpresaT3.Controllers
             {
                 products = products.Where(x => x.Nombre!.Contains(searchByName) || x.Categoria!.Contains(searchByCategory));
             }
+
 
             ViewBag.Categoria = await _context.Category.ToListAsync();
 

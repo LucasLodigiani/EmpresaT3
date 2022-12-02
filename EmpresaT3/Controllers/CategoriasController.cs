@@ -97,6 +97,7 @@ namespace EmpresaT3.Controllers
             {
                 try
                 {
+
                     _context.Update(category);
                     await _context.SaveChangesAsync();
                 }
@@ -157,5 +158,7 @@ namespace EmpresaT3.Controllers
         {
           return _context.Category.Any(e => e.Id == id);
         }
+
+
     }
 }
