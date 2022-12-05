@@ -54,7 +54,7 @@ namespace EmpresaT3.Controllers
                     Email = contacto.Email,
                     Mensaje = contacto.Mensaje,
                     Fecha = datetime2,
-                    IpAddress = RemoteIP.GetIP(),
+                    IpAddress = RemoteIP.GetClientIP(),
                 };
                 _context.Add(nuevoMensaje);
                 await _context.SaveChangesAsync();

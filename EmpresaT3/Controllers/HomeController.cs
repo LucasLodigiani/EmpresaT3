@@ -12,6 +12,10 @@ namespace EmpresaT3.Controllers
         {
             _logger = logger;
         }
+        public IActionResult Login()
+        {
+            return LocalRedirect("/Identity/Account/Login");
+        }
 
         public IActionResult Index()
         {

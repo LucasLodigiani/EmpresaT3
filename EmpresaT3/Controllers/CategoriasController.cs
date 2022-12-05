@@ -62,6 +62,7 @@ namespace EmpresaT3.Controllers
             {
                 _context.Add(category);
                 await _context.SaveChangesAsync();
+                GuardarLog(category.Id, "Crear", "Categorias");
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -102,6 +103,7 @@ namespace EmpresaT3.Controllers
 
                     _context.Update(category);
                     await _context.SaveChangesAsync();
+                    GuardarLog(category.Id, "Editar", "Categorias");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -153,6 +155,7 @@ namespace EmpresaT3.Controllers
             }
             
             await _context.SaveChangesAsync();
+            GuardarLog(category.Id, "Borrar", "Categorias");
             return RedirectToAction(nameof(Index));
         }
 
@@ -162,5 +165,28 @@ namespace EmpresaT3.Controllers
         }
 
 
+
+
+
+
+        void GuardarLog(int? id, string accion, string operacion)
+        {
+            TimeZoneInfo tzone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
+            DateTime dt = DateTime.UtcNow;
+            var datetime2 = TimeZoneInfo.ConvertTimeFromUtc(dt, tzone).ToString();
+
+            Logs logs = new Logs()
+            {
+                Usuario = User.Identity.Name,
+                Accion = accion,
+                Producto = id,
+                Fecha = datetime2,
+                Operacion = operacion,
+                IpAddress = RemoteIP.GetClientIP(),
+            };
+            _context.Add(logs);
+            _context.SaveChanges();
+
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace EmpresaT3.Models
         [JsonPropertyName("API Help")]
         public string ApiHelp { get; set; }
 
-        static public string GetIP()
+        static public string GetClientIP()
         {
             HttpClient client = new HttpClient();
             var result = client.GetStringAsync("https://jsonip.com/").Result;

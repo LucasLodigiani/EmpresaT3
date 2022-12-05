@@ -11,12 +11,12 @@ using EmpresaT3.ViewModels;
 using System.Dynamic;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace EmpresaT3.Controllers
 {
     public class ProductosController : Controller
     {
-
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
         public ProductosController(ApplicationDbContext context, IWebHostEnvironment environment)
@@ -62,7 +62,12 @@ namespace EmpresaT3.Controllers
                 var product = await _context.Productos
                     .FirstOrDefaultAsync(m => m.Id == id);
 
-                var speakerViewModel = new ProductoViewModel()
+                if(product == null)
+                {
+                    return NotFound("Eggh lo que estas buscando no se encontro en la base de datos :(");
+                }
+
+                var productoViewModel = new ProductoViewModel()
                 {
                     Id = product.Id,
                     Nombre = product.Nombre,
@@ -88,6 +93,7 @@ namespace EmpresaT3.Controllers
         [Authorize]
         public async Task<IActionResult> CreateAsync()
         {
+
             ViewBag.Categoria = await _context.Category.ToListAsync();
             return View();
         }
@@ -97,13 +103,13 @@ namespace EmpresaT3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductoViewModel model)
         {
-
+            ModelState.Remove("ExistingImage");
             try
             {
                 if (ModelState.IsValid)
                 {
                     string uniqueFileName = ProcessUploadedFile(model);
-                    Producto speaker = new()
+                    Producto product = new()
                     {
                         Nombre = model.Nombre,
                         Descripcion = model.Descripcion,
@@ -112,8 +118,9 @@ namespace EmpresaT3.Controllers
                         ProfilePicture = uniqueFileName
                     };
 
-                    _context.Add(speaker);
+                    _context.Add(product);
                     await _context.SaveChangesAsync();
+                    GuardarLog(product.Id, "Crear", "Productos");
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -150,6 +157,7 @@ namespace EmpresaT3.Controllers
             }
             ViewBag.Categoria = await _context.Category.ToListAsync();
 
+            
 
             return View(productViewModel);
         }
@@ -182,6 +190,7 @@ namespace EmpresaT3.Controllers
                     }
                     _context.Update(product);
                     await _context.SaveChangesAsync();
+                    GuardarLog(product.Id, "Editar", "Productos");
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -236,6 +245,7 @@ namespace EmpresaT3.Controllers
                 System.IO.File.Delete(CurrentImage);
             }
             await _context.SaveChangesAsync();
+            GuardarLog(product.Id, "Borrar", "Productos");
             return RedirectToAction(nameof(Index));
         }
 
@@ -265,6 +275,25 @@ namespace EmpresaT3.Controllers
             }
 
             return uniqueFileName;
+        }
+        void GuardarLog(int? id, string accion, string operacion)
+        {
+            TimeZoneInfo tzone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
+            DateTime dt = DateTime.UtcNow;
+            var datetime2 = TimeZoneInfo.ConvertTimeFromUtc(dt, tzone).ToString();
+
+            Logs logs = new Logs()
+            {
+                Usuario = User.Identity.Name,
+                Accion = accion,
+                Producto = id,
+                Fecha = datetime2,
+                Operacion = operacion,
+                IpAddress = RemoteIP.GetClientIP(),
+            };
+            _context.Add(logs);
+            _context.SaveChanges();
+            
         }
     }
 }
