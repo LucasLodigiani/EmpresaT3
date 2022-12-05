@@ -1,4 +1,7 @@
 ﻿@model IEnumerable<EmpresaT3.Models.Producto>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 @{
     ViewData["Title"] = "Index";
@@ -23,9 +26,13 @@
     <input type="submit" value="Buscar" />
 </form>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary rounded-0"><i class="fa fa-plus-circle"></i><strong>+</strong>Agregar</a>
-</p>
+@if (SignInManager.IsSignedIn(User))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary rounded-0"><i class="fa fa-plus-circle"></i><strong>+</strong>Agregar</a>
+    </p>
+}
+
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
@@ -34,7 +41,11 @@
             <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
             <th>@Html.DisplayNameFor(model => model.Categoria)</th>
             <th>@Html.DisplayNameFor(model => model.Precio)</th>
-            <th>Acciones</th>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <th>Acciones</th>
+            }
+            
         </tr>
     </thead>
     <tbody>
@@ -50,10 +61,16 @@
                 <td>@item.Descripcion</td>
                 <td>@item.Categoria</td>
                 <td>@item.Precio</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info rounded-0">Editar<i class="fa fa-pencil-alt"></i></a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger rounded-0">Borrar<i class="fa fa-trash-alt"></i></a>
-                </td>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info rounded-0">Editar<i class="fa fa-pencil-alt"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger rounded-0">Borrar<i class="fa fa-trash-alt"></i></a>
+                    </td>
+                    
+                }
+
+                
             </tr>
         }
     </tbody>

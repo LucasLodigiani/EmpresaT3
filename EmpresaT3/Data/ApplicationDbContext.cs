@@ -14,6 +14,7 @@ namespace EmpresaT3.Data
         }
         public DbSet<Producto> Productos { get; set; }
         public DbSet<EmpresaT3.Models.Category> Category { get; set; }
+        public DbSet<EmpresaT3.Models.Contacto> Contacto { get; set; }
 
     }
 }

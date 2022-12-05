@@ -85,12 +85,14 @@ namespace EmpresaT3.Controllers
             }
         }
 
+        [Authorize]
         public async Task<IActionResult> CreateAsync()
         {
             ViewBag.Categoria = await _context.Category.ToListAsync();
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductoViewModel model)
@@ -123,6 +125,7 @@ namespace EmpresaT3.Controllers
             return View(model);
         }
 
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -151,6 +154,7 @@ namespace EmpresaT3.Controllers
             return View(productViewModel);
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ProductoViewModel model)
@@ -189,6 +193,7 @@ namespace EmpresaT3.Controllers
             return View();
         }
 
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -216,6 +221,7 @@ namespace EmpresaT3.Controllers
             return View(speakerViewModel);
         }
 
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
