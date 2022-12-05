@@ -63,49 +63,48 @@ namespace EmpresaT3.Controllers
             return View(contacto);
         }
 
-       
 
 
-        // GET: Contacto/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null || _context.Contacto == null)
-        //    {
-        //        return NotFound();
-        //    }
 
-        //    var contacto = await _context.Contacto
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (contacto == null)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null || _context.Contacto == null)
+            {
+                return NotFound();
+            }
 
-        //    return View(contacto);
-        //}
+            var contacto = await _context.Contacto
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (contacto == null)
+            {
+                return NotFound();
+            }
 
-        //// POST: Contacto/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    if (_context.Contacto == null)
-        //    {
-        //        return Problem("Entity set 'ApplicationDbContext.Contacto'  is null.");
-        //    }
-        //    var contacto = await _context.Contacto.FindAsync(id);
-        //    if (contacto != null)
-        //    {
-        //        _context.Contacto.Remove(contacto);
-        //    }
-            
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+            return View(contacto);
+        }
 
-        //private bool ContactoExists(int id)
-        //{
-        //  return _context.Contacto.Any(e => e.Id == id);
-        //}
+        // POST: Contacto/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (_context.Contacto == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Contacto'  is null.");
+            }
+            var contacto = await _context.Contacto.FindAsync(id);
+            if (contacto != null)
+            {
+                _context.Contacto.Remove(contacto);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool ContactoExists(int id)
+        {
+            return _context.Contacto.Any(e => e.Id == id);
+        }
     }
 }

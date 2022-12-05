@@ -89,17 +89,23 @@ namespace EmpresaT3.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Categorias")] Category category)
+        public async Task<IActionResult> Edit(int id, string cat,[Bind("Id,Categorias")] Category category)
         {
             if (id != category.Id)
             {
                 return NotFound();
             }
 
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var product = await _context.Productos.Where(x => x.Categoria == cat).ToListAsync();
+                    foreach (var x in product)
+                    {
+                        x.Categoria = category.Categorias;
+                    }
 
                     _context.Update(category);
                     await _context.SaveChangesAsync();
@@ -149,6 +155,13 @@ namespace EmpresaT3.Controllers
                 return Problem("Entity set 'ApplicationDbContext.Category'  is null.");
             }
             var category = await _context.Category.FindAsync(id);
+
+            var product = await _context.Productos.Where(x => x.Categoria == category.Categorias).ToListAsync();
+            foreach(var p in product)
+            {
+                _context.Remove<Producto>(p);
+            }
+
             if (category != null)
             {
                 _context.Category.Remove(category);

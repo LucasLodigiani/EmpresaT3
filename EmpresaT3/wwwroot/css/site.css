@@ -17,3 +17,8 @@ body {
   margin-bottom: 60px;
 }
 
+.colores {
+    --color-theme: #74dfcf;
+    --color-back-active: #04957d;
+    --color-gradient: linear-gradient(to right, var(--color-theme), var(--color-back-active));
+}
