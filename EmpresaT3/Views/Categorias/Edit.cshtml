@@ -10,10 +10,11 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <p>CUIDADO, AL EDITAR LA CATEGORÍA NO SE MODIFICAN EN LOS PRODUCTOS REGISTRADOS Y ESTOS SE PERDERAN.</p>
+        <p>Nota: al editar la categoria se actualizaran a su vez los productos ya cargados bajo esta categoría</p>
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" name="cat" value="@Model.Categorias" />
             <div class="form-group">
                 <label asp-for="Categorias" class="control-label"></label>
                 <input asp-for="Categorias" class="form-control" />

@@ -15,10 +15,12 @@ namespace EmpresaT3.Controllers
     public class CategoriasController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public CategoriasController(ApplicationDbContext context)
+        public CategoriasController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         // GET: Categorias
@@ -101,7 +103,9 @@ namespace EmpresaT3.Controllers
             {
                 try
                 {
+                    //ACTUALIZAR CATEGORIA DE PRODUCTOS
                     var product = await _context.Productos.Where(x => x.Categoria == cat).ToListAsync();
+                    
                     foreach (var x in product)
                     {
                         x.Categoria = category.Categorias;
@@ -156,12 +160,21 @@ namespace EmpresaT3.Controllers
             }
             var category = await _context.Category.FindAsync(id);
 
+
+            //ELIMINAR PRODUCTOS E IMAGENES
             var product = await _context.Productos.Where(x => x.Categoria == category.Categorias).ToListAsync();
-            foreach(var p in product)
+            string deleteFileFromFolder = Path.Combine(_environment.WebRootPath, "Uploads");
+            foreach (var p in product)
             {
+                var CurrentImage = Path.Combine(Directory.GetCurrentDirectory(), deleteFileFromFolder, p.ProfilePicture);
+                if (System.IO.File.Exists(CurrentImage))
+                {
+                    System.IO.File.Delete(CurrentImage);
+                }
                 _context.Remove<Producto>(p);
             }
 
+            //ELIMINAR CATEGORIA
             if (category != null)
             {
                 _context.Category.Remove(category);
