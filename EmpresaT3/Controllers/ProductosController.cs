@@ -47,7 +47,7 @@ namespace EmpresaT3.Controllers
 
             ViewBag.Categoria = await _context.Category.ToListAsync();
 
-            return View(await products.ToListAsync());
+            return View(await products.OrderByDescending(s => s.Id).ToListAsync());
         }
 
         public async Task<IActionResult> Details(int? id)

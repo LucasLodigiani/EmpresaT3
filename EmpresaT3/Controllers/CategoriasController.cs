@@ -26,7 +26,7 @@ namespace EmpresaT3.Controllers
         // GET: Categorias
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Category.ToListAsync());
+              return View(await _context.Category.OrderByDescending(s => s.Id).ToListAsync());
         }
 
         // GET: Categorias/Details/5

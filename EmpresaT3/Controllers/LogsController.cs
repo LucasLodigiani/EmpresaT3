@@ -24,7 +24,7 @@ namespace EmpresaT3.Controllers
         // GET: Logs
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Logs.ToListAsync());
+            return View(await _context.Logs.OrderByDescending(s => s.Id).ToListAsync());
         }
 
         // GET: Logs/Delete/5

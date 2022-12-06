@@ -25,7 +25,7 @@ namespace EmpresaT3.Controllers
         [Authorize]
         public async Task<IActionResult> MensajesLista()
         {
-            return View(await _context.Contacto.ToListAsync());
+            return View(await _context.Contacto.OrderByDescending(s => s.Id).ToListAsync());
 
         }
 
