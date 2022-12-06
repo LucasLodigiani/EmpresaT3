@@ -12,6 +12,7 @@ using System.Dynamic;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using X.PagedList;
 
 namespace EmpresaT3.Controllers
 {
@@ -25,12 +26,30 @@ namespace EmpresaT3.Controllers
             _environment = environment;
         }
 
-        public async Task<IActionResult> Index(string searchByName, string searchByCategory)
+        public async Task<IActionResult> Index(int? page, string searchByName, string searchByCategory, string currentName, string currentCategory)
         {
-            if(_context.Productos == null)
+            if (_context.Productos == null)
             {
                 return Problem("Entity error set");
             }
+
+            //BUSQUEDA
+            if(searchByName != null || searchByCategory != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchByName = currentName;
+                searchByCategory = currentCategory;
+            }
+
+            ViewBag.CurrentName = searchByName;
+            ViewBag.CurrentCategory = searchByCategory;
+
+
+
+
             //METODO LINQ PARA OBTENER LOS PRODUCTOS, SOLO SE OBTIENE UNA VEZ
             var products = from p in _context.Productos select p;
 
@@ -45,9 +64,15 @@ namespace EmpresaT3.Controllers
             }
 
 
+            //////PAGINACION
+            var pageNumber = page ?? 1;
+            var onePageOfProducts = products.OrderByDescending(s => s.Id).ToPagedList(pageNumber, 5);
+            ViewBag.OnePageOfProducts = onePageOfProducts;
+
+
             ViewBag.Categoria = await _context.Category.ToListAsync();
 
-            return View(await products.OrderByDescending(s => s.Id).ToListAsync());
+            return View();
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -62,7 +87,7 @@ namespace EmpresaT3.Controllers
                 var product = await _context.Productos
                     .FirstOrDefaultAsync(m => m.Id == id);
 
-                if(product == null)
+                if (product == null)
                 {
                     return NotFound("Eggh lo que estas buscando no se encontro en la base de datos :(");
                 }
@@ -157,7 +182,7 @@ namespace EmpresaT3.Controllers
             }
             ViewBag.Categoria = await _context.Category.ToListAsync();
 
-            
+
 
             return View(productViewModel);
         }
@@ -194,7 +219,7 @@ namespace EmpresaT3.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw;
             }
@@ -293,7 +318,7 @@ namespace EmpresaT3.Controllers
             };
             _context.Add(logs);
             _context.SaveChanges();
-            
+
         }
     }
 }

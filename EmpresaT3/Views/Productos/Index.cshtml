@@ -1,13 +1,19 @@
-﻿@model IEnumerable<EmpresaT3.Models.Producto>
-@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
+﻿@inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+@using Microsoft.AspNetCore.Identity
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using System.Web;
+@using System.Web.Mvc;
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h3 class="text-center text-uppercase">Lista de Productos</h3>
+
+
+
 
 <form>
     <!--Busqueda por nombre-->
@@ -17,7 +23,11 @@
     <br/>
     <label>Filtrar por categoría</label>
     <select name="searchByCategory">
-        <option value="">Todos</option>
+        @if(ViewBag.CurrentCategory != null)
+        {
+            <option value="@ViewBag.CurrentCategory">@ViewBag.CurrentCategory</option>
+        }
+        <option value="">Todos</option>    
         @foreach (var item in ViewBag.Categoria)
         {
             <option value="@item.Categorias">@item.Categorias</option>
@@ -32,15 +42,14 @@
         <a asp-action="Create" class="btn btn-primary rounded-0"><i class="fa fa-plus-circle"></i><strong>+</strong>Agregar</a>
     </p>
 }
-
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.ProfilePicture)</th>
-            <th>@Html.DisplayNameFor(model => model.Nombre)</th>
-            <th>@Html.DisplayNameFor(model => model.Descripcion)</th>
-            <th>@Html.DisplayNameFor(model => model.Categoria)</th>
-            <th>@Html.DisplayNameFor(model => model.Precio)</th>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th>Categoria</th>
+            <th>Precio</th>
             @if (SignInManager.IsSignedIn(User))
             {
                 <th>Acciones</th>
@@ -49,7 +58,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in ViewBag.OnePageOfProducts)
         {
             <tr>
                 <td>
@@ -74,4 +83,7 @@
             </tr>
         }
     </tbody>
+    
+
 </table>
+@Html.PagedListPager((IPagedList)ViewBag.OnePageOfProducts, page => Url.Action("Index", new { page, currentName=ViewBag.CurrentName, currentCategory=ViewBag.CurrentCategory }) )
