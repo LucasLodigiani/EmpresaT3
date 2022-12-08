@@ -4,6 +4,9 @@ using System.Diagnostics;
 
 namespace EmpresaT3.Controllers
 {
+    //[Authorize(Roles = $"{Constants.Roles.Administrator},{Constants.Roles.Manager}")]
+    //[Authorize(Policy = Constants.Policies.RequireAdmin)]
+    //[Authorize(Policy = "RequireAdmin")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

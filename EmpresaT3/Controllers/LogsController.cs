@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using EmpresaT3.Data;
+using EmpresaT3.Areas.Identity.Data;
 using EmpresaT3.Models;
 using Microsoft.AspNetCore.Authorization;
 

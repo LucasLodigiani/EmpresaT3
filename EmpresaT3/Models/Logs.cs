@@ -1,4 +1,4 @@
-﻿using EmpresaT3.Data;
+﻿using EmpresaT3.Areas.Identity.Data;
 using System.ComponentModel.DataAnnotations;
 
 namespace EmpresaT3.Models
