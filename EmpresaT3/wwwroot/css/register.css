@@ -1,0 +1,111 @@
+.title-reg{
+    margin-left: 350px ;
+}
+.login-card {
+    width: 450px;
+    background: rgba(45, 151, 13, 0.5);
+    padding: 4rem;
+    margin-left:450px;
+    border-radius: 10px;
+    position: relative;
+}
+.login-card::before {
+    content: '';
+    position: relative;
+    inset: 0;
+    background: rgba(255, 3, 3, 0.15);
+    transform: rotate(-6deg);
+    border-radius: 100px;
+    z-index: -1;
+}
+.login-card-logo {
+    margin-bottom: 2rem;
+}
+.login-card-logo img {
+    width: 60px;
+}
+.login-card-logo,
+.login-card-header,
+.login-card-footer {
+    text-align: center;
+}
+.login-card-header {
+    margin-bottom: 2rem;
+}
+.login-card-header h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: .5rem;
+}
+.login-card-header h1+div {
+    font-size: calc(1rem * .8);
+    opacity: .8;
+}
+.user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.login-card-form .form-item {
+    margin: 13px 100px;
+    position: absolute;
+}
+.login-card-form .form-item .form-item-icon {
+    position: absolute;
+    top: 0.82rem;
+    left: 1.5rem;
+    font-size: 1.3rem;
+    opacity: .4;
+}
+.login-card input[type="text"],
+.login-card input[type="password"],
+.login-card input[type="email"] {
+    border: none;
+    outline: none;
+    color: rgb(0, 0, 0);
+    background: rgb(255, 255, 255);
+    padding: 1rem 1.5rem;
+    margin: 10px;
+    padding-left: calc(1rem * 3.5);
+    border-radius: 100px;
+    width: 100%;
+    transition: background .5s;
+}
+.login-card input:focus {
+    background: white;
+}
+.login-card button {
+    margin: 10px 100px;
+    background: rgba(15, 49, 4, 0.76);
+    color:rgb(218, 231, 216);
+    padding: 1rem;
+    border-radius: 100px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: background .5s;
+    border: none;
+}
+.login-card button:hover {
+    background-color: rgba(36, 56, 36, 0.85);
+    cursor: pointer;
+    color: rgb(218, 231, 216);
+    border: none;
+}
+.icons{
+    position: absolute;
+    margin: 25px 30px;
+    color: rgb(0, 0, 0);
+}
+@media (max-width: 768px) {
+
+    body {
+        padding: 2rem 0;
+    }
+
+    .login-card {
+        width: 280px;
+        padding: 2rem;
+    }
+
+}

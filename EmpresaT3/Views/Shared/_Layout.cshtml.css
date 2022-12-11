@@ -6,45 +6,19 @@ for details on configuring this project to bundle and minify static web assets. 
   --color-gradient: linear-gradient(to right, var(--color-theme), var(--color-back-active));
 }
 
-header{
-  box-shadow: 10px 2px #ff0000;
-}
 .degrade {
   background: linear-gradient(to right, rgb(33, 190, 93), rgb(80, 102, 64));
 }
 
+a:hover{
+  color: green;
+}
 a.navbar-brand {
   white-space: normal;
   text-align: center;
   word-break: break-all;
   color: #fff;
 }
-
-a {
-  color: #f1f1f1;
-}
-
-li {
-  border: 5px solid;
-  color: rgb(33, 190, 93);
-  border-radius: 5px;
-  background-image: linear-gradient(30deg, rgb(0, 155, 59) 50%,
-  transparent 50%);
-  background-size: 500px;
-  background-repeat: no-repeat;
-  background-position: 0%;
-  -webkit-transition: background 300ms ease-in-out;
-  transition: background 300ms ease-in-out;
-  margin:0px 15px;
-}
-
-li:hover {
-  background-position: 100%;
-  transition: 1.5s;
-  color: rgb(5, 54, 24);
-  border: 3px solid rgb(31, 214, 25);
-}
-
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;
