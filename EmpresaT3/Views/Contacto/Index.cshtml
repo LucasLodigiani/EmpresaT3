@@ -36,14 +36,20 @@
                 <span asp-validation-for="IpAddress" class="text-danger"></span>
             </div>*@
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Enviar" class="btn btn-danger" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
+    <!--MENSAJE DE RETORNO-->
+    @if(@TempData["messages"] == "Error")
+    {
+        <p style="color : red">Ha ocurrido un error al enviar su consulta, intentelo de nuevo o pruebe utilizando otro medio de contacto.</p>
+    }
+    else
+    {
+        <p style="color : green">@TempData["messages"]</p>
+    }
+    
 </div>
 
 @section Scripts {

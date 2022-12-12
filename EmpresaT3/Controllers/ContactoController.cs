@@ -9,6 +9,7 @@ using EmpresaT3.Areas.Identity.Data;
 using EmpresaT3.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.Net.Mail;
 
 namespace EmpresaT3.Controllers
 {
@@ -58,8 +59,11 @@ namespace EmpresaT3.Controllers
                 };
                 _context.Add(nuevoMensaje);
                 await _context.SaveChangesAsync();
+                this.TempData["messages"] = "Su consulta ha sido enviada con éxito";
+
                 return RedirectToAction(nameof(Index));
             }
+            this.TempData["messages"] = "Error";
             return View(contacto);
         }
 
@@ -97,6 +101,8 @@ namespace EmpresaT3.Controllers
             {
                 _context.Contacto.Remove(contacto);
             }
+
+
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
