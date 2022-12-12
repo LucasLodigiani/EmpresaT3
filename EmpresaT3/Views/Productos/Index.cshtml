@@ -43,48 +43,41 @@
         <a asp-action="Create" class="btn btn-primary rounded-0"><i class="fa fa-plus-circle"></i><strong>+</strong>Agregar</a>
     </p>
 }
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Imagen</th>
-            <th>Nombre</th>
-            <th>Descripcion</th>
-            <th>Categoria</th>
-            <th>Precio</th>
-            @if (SignInManager.IsSignedIn(User))
-            {
-                <th>Acciones</th>
-            }
-            
-        </tr>
-    </thead>
+<table class="table color_fondo_tabla">
     <tbody>
         @foreach (var item in ViewBag.OnePageOfProducts)
         {
-            <tr>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">
-                        <img src="@FileLocation.RetriveFileFromFolder@item.ProfilePicture" class="img-thumbnail" height="100" width="100" asp-append-version="true" />
-                    </a>
-                </td>
-                <td>@item.Nombre</td>
-                <td>@item.Descripcion</td>
-                <td>@item.Categoria</td>
-                <td>@item.Precio</td>
+            <p>
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    <div class="col">
+                        <div class="card h-100">
+                            <a asp-action="Details" asp-route-id="@item.Id">
+                                <img src="@FileLocation.RetriveFileFromFolder@item.ProfilePicture" class="img-thumbnail" height="200" width="150" asp-append-version="true" />
+                            </a>
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Nombre</h5>
+                            <p class="card-text">@item.Descripcion</p>
+                            <p class="card-text">@item.Categoria</p>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">$@item.Precio</small>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <td>
+                    <p>
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info rounded-0">Editar<i class="fa fa-pencil-alt"></i></a>
                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger rounded-0">Borrar<i class="fa fa-trash-alt"></i></a>
-                    </td>
+                    </p>
                     
                 }
 
                 
-            </tr>
+            </p>
         }
     </tbody>
-    
-
 </table>
 @Html.PagedListPager((IPagedList)ViewBag.OnePageOfProducts, page => Url.Action("Index", new { page, currentName=ViewBag.CurrentName, currentCategory=ViewBag.CurrentCategory }) )
