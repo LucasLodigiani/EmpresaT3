@@ -7,7 +7,7 @@ for details on configuring this project to bundle and minify static web assets. 
 }
 
 .degrade {
-  background: linear-gradient(to right, rgb(33, 190, 93), rgb(80, 102, 64));
+  background: linear-gradient(to left, rgb(29, 37, 26),rgb(3, 102, 64));
 }
 
 a:hover{

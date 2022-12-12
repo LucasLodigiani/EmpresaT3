@@ -160,7 +160,7 @@ li a {
 } */
 
 .degrade {
-    background: linear-gradient(to right, rgb(33, 190, 93), rgb(80, 102, 64));
+    background: linear-gradient(to left, rgb(29, 37, 26),rgb(3, 102, 64));
 }
 
 a.navbar-brand {
@@ -175,14 +175,13 @@ a {
 }
 
 .logo {
-    height: 85px;
+    height: 65px;
     width: auto;
     transition: all;
+    /* display: none; */
+    /* position: relative; */
 }
 
-.logo:hover {
-    transform: scale(1.2);
-}
 .navbar-light .navbar-nav .nav-link{
     color: #000000;
 }
@@ -216,4 +215,5 @@ a {
     background-position: 100%;
     transition: 2s;
     color: #ffffff;
+    background-color: rgb(10, 121, 0);
 }
