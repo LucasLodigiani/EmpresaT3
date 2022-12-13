@@ -2,6 +2,9 @@
 @using EmpresaT3.Areas.Identity.Data
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Iframe"] = @"<iframe name='myIframe' id='myIframe' width='300' height='400' src='/Contacto/MensajesLista/'></iframe>";
+}
 
 
 <!DOCTYPE html>
@@ -50,6 +53,16 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
                             </li>
+
+                            //DROPDOWN DE MENSAJES
+                            <div class="dropdown">
+                              <li class="nav-item">
+                                  <a class="nav-link">Mensajes</a>
+                              </li>
+                              <div class="dropdown-content">
+                                @Html.Raw(ViewData["Iframe"])
+                              </div>
+                            </div>
                         }
 
                     </ul>
@@ -61,8 +74,10 @@
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
+            
         </main>
     </div>
+    
 
     <footer class="border-top footer text-muted">
         <div class="container">
@@ -72,7 +87,9 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
+     
 </body>
 </html>

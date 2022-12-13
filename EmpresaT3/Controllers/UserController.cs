@@ -49,6 +49,15 @@ namespace EmpresaT3.Controllers
             return View(vm);
         }
 
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = _unitOfWork.User.GetUser(id);
+            
+
+
+            return View();
+        }
+
 
 
 

@@ -1,9 +1,16 @@
 ﻿@model IEnumerable<EmpresaT3.Models.Contacto>
 
+@*QUITAR LAYOUT, ESTO PARA QUE SE RENDERICE CORRECTAMENTE EL IFRAME*@
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-<h1>Mensajes</h1>
+<h3>Ultimos Mensajes</h3>
+<hr />
 
-<table class="table">
+@*<table class="table">
     <thead>
         <tr>
             <th>
@@ -24,9 +31,9 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody>*@
 @foreach (var item in Model) {
-        <tr>
+        @*<tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Nombre)
             </td>
@@ -40,13 +47,25 @@
                 @Html.DisplayFor(modelItem => item.Fecha)
             </td>
             <td>
-                @*@Html.DisplayFor(modelItem => item.IpAddress)*@
+                @Html.DisplayFor(modelItem => item.IpAddress)
                 Protegido
             </td>
             <td>
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
-        </tr>
+        </tr>*@
+        <div class="card text-white bg-secondary mb-3" style="max-width: 18rem;">
+          <div class="card-header">@Html.DisplayFor(modelItem => item.Email)</div>
+          <div class="card-body">
+            <h5 class="card-title">@Html.DisplayFor(modelItem => item.Nombre)</h5>
+            <p class="card-text" style="color:chartreuse">@Html.DisplayFor(modelItem => item.Fecha)</p>
+            <p class="card-text">@Html.DisplayFor(modelItem => item.Mensaje)</p>
+            
+            <p class="card-text" style="color:burlywood">>Dirección IP Protegida</p>
+          </div>
+          <a asp-action="Delete" asp-route-id="@item.Id"><button class="btn btn-danger" style="width:100%">Borrar</button></a>
+        </div>
 }
-    </tbody>
-</table>
+
+    @*</tbody>
+</table>*@

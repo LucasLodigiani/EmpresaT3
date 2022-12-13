@@ -105,7 +105,7 @@ namespace EmpresaT3.Controllers
 
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(MensajesLista));
         }
 
         private bool ContactoExists(int id)

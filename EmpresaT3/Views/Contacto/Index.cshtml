@@ -7,10 +7,6 @@
 <h4>Contacto</h4>
 <hr />
 
-@if (SignInManager.IsSignedIn(User))
-{
-    <button><a class="nav-link text-dark" asp-area="" asp-controller="Contacto" asp-action="MensajesLista">Lista de mensajes</a></button>
-}
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Index">
