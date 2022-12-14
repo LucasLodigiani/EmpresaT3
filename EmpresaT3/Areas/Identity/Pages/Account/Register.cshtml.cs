@@ -20,9 +20,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using EmpresaT3.Models;
+using EmpresaT3.Core;
 
 namespace EmpresaT3.Areas.Identity.Pages.Account
 {
+    [Authorize(Roles = $"{Constants.Roles.Administrator}")]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
