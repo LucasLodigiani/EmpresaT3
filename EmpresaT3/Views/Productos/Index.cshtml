@@ -44,40 +44,35 @@
     </p>
 }
 <table class="table color_fondo_tabla">
-    <tbody>
-        @foreach (var item in ViewBag.OnePageOfProducts)
-        {
-            <p>
-                <div class="row row-cols-1 row-cols-md-3 g-4">
-                    <div class="col">
-                        <div class="card h-100">
-                            <a asp-action="Details" asp-route-id="@item.Id">
-                                <img src="@FileLocation.RetriveFileFromFolder@item.ProfilePicture" class="img-thumbnail" height="200" width="150" asp-append-version="true" />
-                            </a>
+    <tbody class="table color_fondo_tabla">
+        <div class="orden row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var item in ViewBag.OnePageOfProducts)
+            {
+                <div class="col">
+                    <div class="card h-100">
+                        <a asp-action="Details" asp-route-id="@item.Id">
+                            <img src="@FileLocation.RetriveFileFromFolder@item.ProfilePicture" class="img-thumbnail" height="500" width="500" asp-append-version="true" />
+                        </a>
                         <div class="card-body">
                             <h5 class="card-title">@item.Nombre</h5>
                             <p class="card-text">@item.Descripcion</p>
                             <p class="card-text">@item.Categoria</p>
                         </div>
                         <div class="card-footer">
-                            <small class="text-muted">$@item.Precio</small>
-                        </div>
+                            <small class="card-text">$@item.Precio</small>
                         </div>
                     </div>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <p>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info rounded-0">Editar<i class="fa fa-pencil-alt"></i></a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger rounded-0">Borrar<i class="fa fa-trash-alt"></i></a>
+                        </p>
+                            
+                    }
                 </div>
-                
-                @if (User.IsInRole("Manager") || User.IsInRole("Administrator"))
-                {
-                    <p>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info rounded-0">Editar<i class="fa fa-pencil-alt"></i></a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger rounded-0">Borrar<i class="fa fa-trash-alt"></i></a>
-                    </p>
-                    
-                }
-
-                
-            </p>
-        }
+            }
+        </div>
     </tbody>
 </table>
 @Html.PagedListPager((IPagedList)ViewBag.OnePageOfProducts, page => Url.Action("Index", new { page, currentName=ViewBag.CurrentName, currentCategory=ViewBag.CurrentCategory }) )

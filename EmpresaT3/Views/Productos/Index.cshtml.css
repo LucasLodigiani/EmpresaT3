@@ -1,3 +1,26 @@
 .color_fondo_tabla{
     background-color: rgb(233, 93, 58);
 }
+
+.card-title{
+    text-align: center;
+}
+
+.card-text{
+    text-align: center;
+}
+
+.card-footer{
+    text-align: center;
+}
+
+.orden{
+    display: flex;
+    flex-flow: row wrap;
+    flex: 1 200px;
+}
+
+.col{
+    display: flex;
+    flex-flow: row wrap;
+}
