@@ -1,0 +1,73 @@
+.contact-div h1{
+    text-align: center;
+    color: rgb(59, 59, 59);
+}
+.contact-form{
+    max-width: 600px;
+    margin: auto;
+    padding: 0 10px;
+    overflow: hidden;
+}
+.contact-form-text{
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 16px 0;
+    border: 0;
+    background: rgb(59, 59, 59);
+    padding: 20px 40px;
+    outline: none;
+    color: #ddd;
+    transition: 0.5s;
+}
+.contact-form-text:focus{
+    box-shadow: 0 0 2px 2px rgb(10, 121, 0);
+}
+textarea.contact-form-text{
+    resize: none;
+    height: 150px;
+}
+.contact-form-btn{
+    float: none;
+    border: 0;
+    background:#05d439;
+    color: #fff;
+    padding: 12px 62px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.5s;
+    margin: 2px 0px 1px 200px;
+}
+.contact-form-btn:hover{
+    background: rgb(10, 121, 0);
+}
+.validation-contact{
+    color: rgb(224, 12, 12);
+    text-transform: full-width;
+    text-decoration: underline rgb(110, 22, 11);
+}
+button{
+    border: none;
+}
+a{
+    text-decoration: none;
+    color: #fff;
+}
+a:hover{
+    color: #fff;
+}
+
+/* .messages-page{
+
+} */
+.contact-div button{
+    float: none;
+    border: 0;
+    background:#05d439;
+    color: #fff;
+    padding: 12px 50px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.5s;
+    margin: 10px 0px 0px 200px;
+}
