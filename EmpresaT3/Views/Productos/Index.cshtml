@@ -66,7 +66,7 @@
                     </div>
                 </div>
                 
-                @if (SignInManager.IsSignedIn(User))
+                @if (User.IsInRole("Manager") || User.IsInRole("Administrator"))
                 {
                     <p>
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info rounded-0">Editar<i class="fa fa-pencil-alt"></i></a>

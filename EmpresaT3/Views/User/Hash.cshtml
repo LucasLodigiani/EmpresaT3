@@ -1,0 +1,102 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model EmpresaT3.Core.ViewModels.EditUserViewModel
+
+@{
+}
+
+<main>
+
+    
+
+    @*ELIMINAR USUARIO*@
+    <div class="card" style="width: 18rem; text-align:center; float:right;margin-right:20%">
+      <div class="card-header" style="color:crimson">
+        ELIMINAR USUARIO
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Esta acción no puede deshacerse</li>
+      </ul>
+      <div class="card-footer">
+          <form asp-action="DeleteUser" enctype="multipart/form-data">
+            <input type="hidden" name="userId" value="@Model.User.Id"/>
+            <input type="submit" value="Eliminar" class="btn btn-danger" />
+          </form>
+      </div>
+    </div>
+
+    <div class="d-flex" style="height: 600px;float:right;margin-right:10%">
+      <div class="vr"></div>
+    </div>
+
+    
+    @*EDITAR USUARIO*@
+    <p><b>USER HASH</b>: @Model.User.Id</p>
+
+
+    <div class="row g-5">
+        <div class="col-md-7 col-lg-8">
+
+            @using (Html.BeginForm("OnPost", "User"))
+            {
+                @Html.HiddenFor(h => @Model.User.Id);
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label class="form-label"><b>Nombre</b></label>
+                        <input asp-for="@Model.User.FirstName" class="form-control" autocomplete="username" aria-required="true" />
+                        <span asp-validation-for="@Model.User.FirstName" class="text-danger">
+                        </span>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label class="form-label"><b>Apellido</b></label>
+                        <input asp-for="@Model.User.LastName" class="form-control" autocomplete="username" aria-required="true" />
+                        <span asp-validation-for="@Model.User.LastName" class="text-danger">
+                        </span>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label"><b>Contacto</b></label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text"></span>
+                            <input asp-for="@Model.User.Email" class="form-control" autocomplete="username" aria-required="true" />
+                            <span asp-validation-for="@Model.User.Email" class="text-danger">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <h4 class="mb-3">Roles</h4>
+
+                <div class="my-3">
+                    
+                    @for (int i = 0; i < @Model.Roles.Count(); i++)
+                    {
+                        <div class="form-check">
+                            @Html.CheckBoxFor(c => @Model.Roles[i].Selected)
+                            @Html.HiddenFor(h => @Model.Roles[i].Value)
+                            
+                            @Html.LabelFor(l => @Model.Roles[i].Selected, @Model.Roles[i].Text, new {@class="form-check-label"})
+                            @Html.HiddenFor(h => @Model.Roles[i].Text)
+                        </div>
+                    }
+                </div>
+
+                <hr class="my-4">
+                
+                
+
+                <button class="btn btn-success" type="submit">Guardar</button>
+            }
+        </div>
+    </div>
+</main>
+
+
+
+
+
+

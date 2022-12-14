@@ -26,8 +26,15 @@ namespace EmpresaT3.Controllers
         [Authorize]
         public async Task<IActionResult> MensajesLista()
         {
-            return View(await _context.Contacto.OrderByDescending(s => s.Id).ToListAsync());
-
+            try
+            {
+                return View(await _context.Contacto.OrderByDescending(s => s.Id).ToListAsync());
+            }
+            catch (Exception)
+            {
+                return NotFound("Error");
+            }
+            
         }
 
         // GET: Contacto/Create
@@ -41,30 +48,38 @@ namespace EmpresaT3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index([Bind("Id,Nombre,Email,Mensaje")] Contacto contacto)
         {
-            ModelState.Remove("Fecha");
-            ModelState.Remove("IpAddress");
-            if (ModelState.IsValid)
+            try
             {
-                TimeZoneInfo tzone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
-                DateTime dt = DateTime.UtcNow;
-                var datetime2 = TimeZoneInfo.ConvertTimeFromUtc(dt, tzone).ToString();
-
-                Contacto nuevoMensaje = new()
+                ModelState.Remove("Fecha");
+                ModelState.Remove("IpAddress");
+                if (ModelState.IsValid)
                 {
-                    Nombre = contacto.Nombre,
-                    Email = contacto.Email,
-                    Mensaje = contacto.Mensaje,
-                    Fecha = datetime2,
-                    IpAddress = RemoteIP.GetClientIP(),
-                };
-                _context.Add(nuevoMensaje);
-                await _context.SaveChangesAsync();
-                this.TempData["messages"] = "Su consulta ha sido enviada con éxito";
+                    TimeZoneInfo tzone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
+                    DateTime dt = DateTime.UtcNow;
+                    var datetime2 = TimeZoneInfo.ConvertTimeFromUtc(dt, tzone).ToString();
 
-                return RedirectToAction(nameof(Index));
+                    Contacto nuevoMensaje = new()
+                    {
+                        Nombre = contacto.Nombre,
+                        Email = contacto.Email,
+                        Mensaje = contacto.Mensaje,
+                        Fecha = datetime2,
+                        IpAddress = RemoteIP.GetClientIP(),
+                    };
+                    _context.Add(nuevoMensaje);
+                    await _context.SaveChangesAsync();
+                    this.TempData["messages"] = "Su consulta ha sido enviada con éxito";
+
+                    return RedirectToAction(nameof(Index));
+                }
+                this.TempData["messages"] = "Error";
+                return View(contacto);
             }
-            this.TempData["messages"] = "Error";
-            return View(contacto);
+            catch (Exception)
+            {
+                return NotFound("Error");
+            }
+            
         }
 
 
@@ -72,19 +87,27 @@ namespace EmpresaT3.Controllers
 
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Contacto == null)
+            try
             {
-                return NotFound();
-            }
+                if (id == null || _context.Contacto == null)
+                {
+                    return NotFound();
+                }
 
-            var contacto = await _context.Contacto
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (contacto == null)
+                var contacto = await _context.Contacto
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (contacto == null)
+                {
+                    return NotFound();
+                }
+
+                return View(contacto);
+            }
+            catch(Exception)
             {
-                return NotFound();
+                return NotFound("Error");
             }
-
-            return View(contacto);
+            
         }
 
         // POST: Contacto/Delete/5
@@ -92,20 +115,28 @@ namespace EmpresaT3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Contacto == null)
+            try
             {
-                return Problem("Entity set 'ApplicationDbContext.Contacto'  is null.");
+                if (_context.Contacto == null)
+                {
+                    return Problem("Entity set 'ApplicationDbContext.Contacto'  is null.");
+                }
+                var contacto = await _context.Contacto.FindAsync(id);
+                if (contacto != null)
+                {
+                    _context.Contacto.Remove(contacto);
+                }
+
+
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(MensajesLista));
             }
-            var contacto = await _context.Contacto.FindAsync(id);
-            if (contacto != null)
+            catch (Exception)
             {
-                _context.Contacto.Remove(contacto);
+                return NotFound("Error");
             }
-
-
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(MensajesLista));
+            
         }
 
         private bool ContactoExists(int id)

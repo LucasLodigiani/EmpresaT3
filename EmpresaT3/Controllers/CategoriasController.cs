@@ -26,25 +26,41 @@ namespace EmpresaT3.Controllers
         // GET: Categorias
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Category.OrderByDescending(s => s.Id).ToListAsync());
+            try
+            {
+                return View(await _context.Category.OrderByDescending(s => s.Id).ToListAsync());
+            }
+            catch (Exception)
+            {
+                return NotFound("Error");
+            }
+            
         }
 
         // GET: Categorias/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Category == null)
+            try
             {
-                return NotFound();
-            }
+                if (id == null || _context.Category == null)
+                {
+                    return NotFound();
+                }
 
-            var category = await _context.Category
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+                var category = await _context.Category
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (category == null)
+                {
+                    return NotFound();
+                }
+
+                return View(category);
+            }
+            catch (Exception)
             {
-                return NotFound();
+                return NotFound("Error");
             }
-
-            return View(category);
+            
         }
 
         // GET: Categorias/Create
@@ -60,30 +76,46 @@ namespace EmpresaT3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Categorias")] Category category)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
-                GuardarLog(category.Id, "Crear", "Categorias");
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(category);
+                    await _context.SaveChangesAsync();
+                    GuardarLog(category.Id, "Crear", "Categorias");
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(category);
             }
-            return View(category);
+            catch (Exception)
+            {
+                return NotFound("Error");
+            }
+            
         }
 
         // GET: Categorias/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Category == null)
+            try
             {
-                return NotFound();
-            }
+                if (id == null || _context.Category == null)
+                {
+                    return NotFound();
+                }
 
-            var category = await _context.Category.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
+                var category = await _context.Category.FindAsync(id);
+                if (category == null)
+                {
+                    return NotFound();
+                }
+                return View(category);
             }
-            return View(category);
+            catch (Exception)
+            {
+                return NotFound("Error");
+            }
+            
         }
 
         // POST: Categorias/Edit/5
@@ -134,19 +166,27 @@ namespace EmpresaT3.Controllers
         // GET: Categorias/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Category == null)
+            try
             {
-                return NotFound();
+                if (id == null || _context.Category == null)
+                {
+                    return NotFound();
+                }
+
+                var category = await _context.Category
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (category == null)
+                {
+                    return NotFound();
+                }
+
+                return View(category);
+            }
+            catch(Exception)
+            {
+                return NotFound("Error");
             }
 
-            var category = await _context.Category
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return View(category);
         }
 
         // POST: Categorias/Delete/5
@@ -154,35 +194,43 @@ namespace EmpresaT3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Category == null)
+            try
             {
-                return Problem("Entity set 'ApplicationDbContext.Category'  is null.");
-            }
-            var category = await _context.Category.FindAsync(id);
-
-
-            //ELIMINAR PRODUCTOS E IMAGENES
-            var product = await _context.Productos.Where(x => x.Categoria == category.Categorias).ToListAsync();
-            string deleteFileFromFolder = Path.Combine(_environment.WebRootPath, "Uploads");
-            foreach (var p in product)
-            {
-                var CurrentImage = Path.Combine(Directory.GetCurrentDirectory(), deleteFileFromFolder, p.ProfilePicture);
-                if (System.IO.File.Exists(CurrentImage))
+                if (_context.Category == null)
                 {
-                    System.IO.File.Delete(CurrentImage);
+                    return Problem("Entity set 'ApplicationDbContext.Category'  is null.");
                 }
-                _context.Remove<Producto>(p);
-            }
+                var category = await _context.Category.FindAsync(id);
 
-            //ELIMINAR CATEGORIA
-            if (category != null)
+
+                //ELIMINAR PRODUCTOS E IMAGENES
+                var product = await _context.Productos.Where(x => x.Categoria == category.Categorias).ToListAsync();
+                string deleteFileFromFolder = Path.Combine(_environment.WebRootPath, "Uploads");
+                foreach (var p in product)
+                {
+                    var CurrentImage = Path.Combine(Directory.GetCurrentDirectory(), deleteFileFromFolder, p.ProfilePicture);
+                    if (System.IO.File.Exists(CurrentImage))
+                    {
+                        System.IO.File.Delete(CurrentImage);
+                    }
+                    _context.Remove<Producto>(p);
+                }
+
+                //ELIMINAR CATEGORIA
+                if (category != null)
+                {
+                    _context.Category.Remove(category);
+                }
+
+                await _context.SaveChangesAsync();
+                GuardarLog(category.Id, "Borrar", "Categorias");
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
             {
-                _context.Category.Remove(category);
+                return NotFound("Error");
             }
             
-            await _context.SaveChangesAsync();
-            GuardarLog(category.Id, "Borrar", "Categorias");
-            return RedirectToAction(nameof(Index));
         }
 
         private bool CategoryExists(int id)

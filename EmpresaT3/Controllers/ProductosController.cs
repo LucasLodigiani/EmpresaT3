@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using X.PagedList;
+using EmpresaT3.Core;
 
 namespace EmpresaT3.Controllers
 {
@@ -28,51 +29,59 @@ namespace EmpresaT3.Controllers
 
         public async Task<IActionResult> Index(int? page, string searchByName, string searchByCategory, string currentName, string currentCategory)
         {
-            if (_context.Productos == null)
+            try
             {
-                return Problem("Entity error set");
-            }
+                if (_context.Productos == null)
+                {
+                    return Problem("Entity error set");
+                }
 
-            //BUSQUEDA
-            if(searchByName != null || searchByCategory != null)
+                //BUSQUEDA
+                if (searchByName != null || searchByCategory != null)
+                {
+                    page = 1;
+                }
+                else
+                {
+                    searchByName = currentName;
+                    searchByCategory = currentCategory;
+                }
+
+                ViewBag.CurrentName = searchByName;
+                ViewBag.CurrentCategory = searchByCategory;
+
+
+
+
+                //METODO LINQ PARA OBTENER LOS PRODUCTOS, SOLO SE OBTIENE UNA VEZ
+                var products = from p in _context.Productos select p;
+
+                if (!String.IsNullOrEmpty(searchByName) && !String.IsNullOrEmpty(searchByCategory))
+                {
+                    products = products.Where(x => x.Nombre!.Contains(searchByName) && x.Categoria!.Contains(searchByCategory));
+                }
+
+                if (!String.IsNullOrEmpty(searchByName) || !String.IsNullOrEmpty(searchByCategory))
+                {
+                    products = products.Where(x => x.Nombre!.Contains(searchByName) || x.Categoria!.Contains(searchByCategory));
+                }
+
+
+                //////PAGINACION
+                var pageNumber = page ?? 1;
+                var onePageOfProducts = products.OrderByDescending(s => s.Id).ToPagedList(pageNumber, 5);
+                ViewBag.OnePageOfProducts = onePageOfProducts;
+
+
+                ViewBag.Categoria = await _context.Category.ToListAsync();
+
+                return View();
+            }
+            catch(Exception)
             {
-                page = 1;
+                return NotFound("Error desconocido");
             }
-            else
-            {
-                searchByName = currentName;
-                searchByCategory = currentCategory;
-            }
-
-            ViewBag.CurrentName = searchByName;
-            ViewBag.CurrentCategory = searchByCategory;
-
-
-
-
-            //METODO LINQ PARA OBTENER LOS PRODUCTOS, SOLO SE OBTIENE UNA VEZ
-            var products = from p in _context.Productos select p;
-
-            if (!String.IsNullOrEmpty(searchByName) && !String.IsNullOrEmpty(searchByCategory))
-            {
-                products = products.Where(x => x.Nombre!.Contains(searchByName) && x.Categoria!.Contains(searchByCategory));
-            }
-
-            if (!String.IsNullOrEmpty(searchByName) || !String.IsNullOrEmpty(searchByCategory))
-            {
-                products = products.Where(x => x.Nombre!.Contains(searchByName) || x.Categoria!.Contains(searchByCategory));
-            }
-
-
-            //////PAGINACION
-            var pageNumber = page ?? 1;
-            var onePageOfProducts = products.OrderByDescending(s => s.Id).ToPagedList(pageNumber, 5);
-            ViewBag.OnePageOfProducts = onePageOfProducts;
-
-
-            ViewBag.Categoria = await _context.Category.ToListAsync();
-
-            return View();
+            
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -111,19 +120,25 @@ namespace EmpresaT3.Controllers
             catch (Exception)
             {
 
-                throw;
+                return NotFound("Error");
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = $"{Constants.Roles.Administrator},{Constants.Roles.Manager}")]
         public async Task<IActionResult> CreateAsync()
         {
-
-            ViewBag.Categoria = await _context.Category.ToListAsync();
-            return View();
+            try
+            {
+                ViewBag.Categoria = await _context.Category.ToListAsync();
+                return View();
+            }
+            catch (Exception)
+            {
+                return NotFound("Error desconocido");
+            } 
         }
 
-        [Authorize]
+        [Authorize(Roles = $"{Constants.Roles.Administrator},{Constants.Roles.Manager}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductoViewModel model)
@@ -152,42 +167,51 @@ namespace EmpresaT3.Controllers
             catch (Exception)
             {
 
-                throw;
+                return NotFound("Error desconocido");
             }
             return View(model);
         }
 
-        [Authorize]
+        [Authorize(Roles = $"{Constants.Roles.Administrator},{Constants.Roles.Manager}")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var product = await _context.Productos.FindAsync(id);
+                var productViewModel = new ProductoViewModel()
+                {
+                    Id = product.Id,
+                    Nombre = product.Nombre,
+                    Descripcion = product.Descripcion,
+                    Categoria = product.Categoria,
+                    Precio = product.Precio,
+                    ExistingImage = product.ProfilePicture
+                };
+
+                if (product == null)
+                {
+                    return NotFound();
+                }
+                ViewBag.Categoria = await _context.Category.ToListAsync();
+
+
+
+                return View(productViewModel);
+
             }
-
-            var product = await _context.Productos.FindAsync(id);
-            var productViewModel = new ProductoViewModel()
+            catch (Exception)
             {
-                Id = product.Id,
-                Nombre = product.Nombre,
-                Descripcion = product.Descripcion,
-                Categoria = product.Categoria,
-                Precio = product.Precio,
-                ExistingImage = product.ProfilePicture
-            };
-
-            if (product == null)
-            {
-                return NotFound();
+                return NotFound("Error desconocido");
             }
-            ViewBag.Categoria = await _context.Category.ToListAsync();
-
-
-
-            return View(productViewModel);
+            
         }
 
-        [Authorize]
+        [Authorize(Roles = $"{Constants.Roles.Administrator},{Constants.Roles.Manager}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ProductoViewModel model)
@@ -221,57 +245,73 @@ namespace EmpresaT3.Controllers
             }
             catch (Exception)
             {
-                throw;
+                return NotFound("Error desconocido");
             }
 
             return View();
         }
 
-        [Authorize]
+        [Authorize(Roles = $"{Constants.Roles.Administrator},{Constants.Roles.Manager}")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var product = await _context.Productos
+                    .FirstOrDefaultAsync(m => m.Id == id);
+
+                var speakerViewModel = new ProductoViewModel()
+                {
+                    Id = product.Id,
+                    Nombre = product.Nombre,
+                    Descripcion = product.Descripcion,
+                    Categoria = product.Categoria,
+                    Precio = product.Precio,
+                    ExistingImage = product.ProfilePicture
+                };
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                return View(speakerViewModel);
             }
-
-            var product = await _context.Productos
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            var speakerViewModel = new ProductoViewModel()
+            catch (Exception)
             {
-                Id = product.Id,
-                Nombre = product.Nombre,
-                Descripcion = product.Descripcion,
-                Categoria = product.Categoria,
-                Precio = product.Precio,
-                ExistingImage = product.ProfilePicture
-            };
-            if (product == null)
-            {
-                return NotFound();
+                return NotFound("Error desconocido");
             }
-
-            return View(speakerViewModel);
+            
         }
 
-        [Authorize]
+        [Authorize(Roles = $"{Constants.Roles.Administrator},{Constants.Roles.Manager}")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Productos.FindAsync(id);
-            //string deleteFileFromFolder = "wwwroot\\Uploads\\";
-            string deleteFileFromFolder = Path.Combine(_environment.WebRootPath, "Uploads");
-            var CurrentImage = Path.Combine(Directory.GetCurrentDirectory(), deleteFileFromFolder, product.ProfilePicture);
-            _context.Productos.Remove(product);
-            if (System.IO.File.Exists(CurrentImage))
+            try
             {
-                System.IO.File.Delete(CurrentImage);
+                var product = await _context.Productos.FindAsync(id);
+                //string deleteFileFromFolder = "wwwroot\\Uploads\\";
+                string deleteFileFromFolder = Path.Combine(_environment.WebRootPath, "Uploads");
+                var CurrentImage = Path.Combine(Directory.GetCurrentDirectory(), deleteFileFromFolder, product.ProfilePicture);
+                _context.Productos.Remove(product);
+                if (System.IO.File.Exists(CurrentImage))
+                {
+                    System.IO.File.Delete(CurrentImage);
+                }
+                await _context.SaveChangesAsync();
+                GuardarLog(product.Id, "Borrar", "Productos");
+                return RedirectToAction(nameof(Index));
             }
-            await _context.SaveChangesAsync();
-            GuardarLog(product.Id, "Borrar", "Productos");
-            return RedirectToAction(nameof(Index));
+            catch (Exception)
+            {
+                return NotFound("Error desconocido");
+            }
+            
         }
 
         private bool SpeakerExists(int id)

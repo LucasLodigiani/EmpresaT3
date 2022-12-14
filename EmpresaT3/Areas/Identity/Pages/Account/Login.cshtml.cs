@@ -105,66 +105,74 @@ namespace EmpresaT3.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
-
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
-            if (ModelState.IsValid)
+            try
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var user = await _signInManager.UserManager.FindByNameAsync(Input.Email);
-                if (user == null)
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
-                }
+                returnUrl ??= Url.Content("~/");
 
-                var result = await _signInManager.CheckPasswordSignInAsync(user, Input.Password, false);
-                if (result.Succeeded)
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+                if (ModelState.IsValid)
                 {
-                    var claims = new List<Claim>
-                    { 
+                    // This doesn't count login failures towards account lockout
+                    // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                    var user = await _signInManager.UserManager.FindByNameAsync(Input.Email);
+                    if (user == null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        return Page();
+                    }
+
+                    var result = await _signInManager.CheckPasswordSignInAsync(user, Input.Password, false);
+                    if (result.Succeeded)
+                    {
+                        var claims = new List<Claim>
+                    {
                         new Claim("amr", "pwd"),
                     };
 
-                    var roles = await _signInManager.UserManager.GetRolesAsync(user);
+                        var roles = await _signInManager.UserManager.GetRolesAsync(user);
 
-                    if (roles.Any())
-                    {
-                        //"Manager,User"
-                        var roleClaim = string.Join(",", roles);
-                        claims.Add(new Claim("Roles", roleClaim));
+                        if (roles.Any())
+                        {
+                            //"Manager,User"
+                            var roleClaim = string.Join(",", roles);
+                            claims.Add(new Claim("Roles", roleClaim));
+                        }
+
+                        await _signInManager.SignInWithClaimsAsync(user, Input.RememberMe, claims);
+
+                        _logger.LogInformation("User logged in.");
+                        return LocalRedirect(returnUrl);
                     }
+                    if (result.Succeeded)
+                    {
+                        _logger.LogInformation("User logged in.");
+                        return LocalRedirect(returnUrl);
+                    }
+                    if (result.RequiresTwoFactor)
+                    {
+                        return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    }
+                    if (result.IsLockedOut)
+                    {
+                        _logger.LogWarning("User account locked out.");
+                        return RedirectToPage("./Lockout");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        return Page();
+                    }
+                }
 
-                    await _signInManager.SignInWithClaimsAsync(user, Input.RememberMe, claims);
-
-                    _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
-                }
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
-                }
+                // If we got this far, something failed, redisplay form
+                return Page();
             }
-
-            // If we got this far, something failed, redisplay form
-            return Page();
+            catch (Exception)
+            {
+                return NotFound("Error desconocido");
+            }
+            
         }
     }
 }

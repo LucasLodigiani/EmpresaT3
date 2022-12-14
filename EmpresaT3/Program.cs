@@ -15,12 +15,20 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+{
+    //Desactiva inmediatamente la sesion del usuario una vez es actualizado.
+    options.ValidationInterval = TimeSpan.Zero;
+});
+
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Error";
+    options.LoginPath = new PathString("/Areas/Identity/Pages/Account/AccessDenied");
 });
 
 #region Authorization

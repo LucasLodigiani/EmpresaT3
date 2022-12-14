@@ -42,7 +42,7 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Contacto" asp-action="Index">Contacto</a>
                         </li>
-                        @if (SignInManager.IsSignedIn(User))
+                        @if(User.IsInRole("Manager") || User.IsInRole("Administrator"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Categorias" asp-action="Index">Categorias</a>
@@ -50,9 +50,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Logs" asp-action="Index">Logs</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
-                            </li>
+                            
 
                             //DROPDOWN DE MENSAJES
                             @*<div class="dropdown">
@@ -71,6 +69,12 @@
                             <div id="popup" class="defa-context-panel">
                               <div>@Html.Raw(ViewData["Iframe"])</div>
                             </div>
+                        }
+                        @if(User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
+                            </li>
                         }
 
                     </ul>

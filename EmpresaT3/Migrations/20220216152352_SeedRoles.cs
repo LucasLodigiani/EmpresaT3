@@ -34,52 +34,34 @@ namespace EmpresaT3.Migrations
 
         private void SeedUser(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(
-                @$"INSERT [dbo].[AspNetUsers] ([Id], [FirstName], [LastName], [UserName], [NormalizedUserName], 
-[Email], [NormalizedEmail], [EmailConfirmed], [PasswordHash], [SecurityStamp], [ConcurrencyStamp], 
-[PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnd], [LockoutEnabled], [AccessFailedCount]) 
-VALUES 
-(N'{User1Id}', N'Test 2', N'Lastname', N'test2@test.ca', N'TEST2@TEST.CA', 
-N'test2@test.ca', N'TEST2@TEST.CA', 0, 
-N'AQAAAAEAACcQAAAAEDGQ5wwj6Iz0lXHIZ5IwuvgSO88jrSBT1etWcDYjJN5CBNDKvddZcEeixYBYmcdFag==', 
-N'YUPAFWNGZI2UC5FOITC7PX5J7XZTAZAA', N'8e150555-a20d-4610-93ff-49c5af44f749', NULL, 0, 0, NULL, 1, 0)");
 
             migrationBuilder.Sql(
                 @$"INSERT [dbo].[AspNetUsers] ([Id], [FirstName], [LastName], [UserName], [NormalizedUserName], 
 [Email], [NormalizedEmail], [EmailConfirmed], [PasswordHash], [SecurityStamp], [ConcurrencyStamp], 
 [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnd], [LockoutEnabled], [AccessFailedCount]) 
 VALUES 
-(N'{User2Id}', N'Test 3', N'Lastname', N'test3@test.ca', N'TEST3@TEST.CA', 
-N'test3@test.ca', N'TEST3@TEST.CA', 0, 
-N'AQAAAAEAACcQAAAAEDGQ5wwj6Iz0lXHIZ5IwuvgSO88jrSBT1etWcDYjJN5CBNDKvddZcEeixYBYmcdFag==', 
-N'YUPAFWNGZI2UC5FOITC7PX5J7XZTAZAA', N'8e150555-a20d-4610-93ff-49c5af44f749', NULL, 0, 0, NULL, 1, 0)");
+(N'{User1Id}', N'Admin', N'Admin', N'empresat3@gmail.com', N'EMPRESAT3@GMAIL.COM', 
+N'empresat3@gmail.com', N'EMPRESAT3@GMAIL.COM', 0, 
+N'AQAAAAEAACcQAAAAEE0IhLXvhvDC71LV+2M8gOj65TJ8v6fBvpiVj0stFcdrAOseEdMY2f+Fdn1JJREvrw==', 
+N'VUMWTI3D7G6R5JGR2VLNA5RTXC3PFDNM', N'7fcb9bb1-be91-4848-baae-ff12ad75b6d3', NULL, 0, 0, NULL, 1, 0)");
+
         }
+
 
         private void SeedUserRoles(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(@$"
-        INSERT INTO [dbo].[AspNetUserRoles]
-           ([UserId]
-           ,[RoleId])
-        VALUES
-           ('{User1Id}', '{ManagerRoleId}');
-        INSERT INTO [dbo].[AspNetUserRoles]
-           ([UserId]
-           ,[RoleId])
-        VALUES
-           ('{User1Id}', '{UserRoleId}');");
 
             migrationBuilder.Sql(@$"
         INSERT INTO [dbo].[AspNetUserRoles]
            ([UserId]
            ,[RoleId])
         VALUES
-           ('{User2Id}', '{AdminRoleId}');
+           ('{User1Id}', '{AdminRoleId}');
         INSERT INTO [dbo].[AspNetUserRoles]
            ([UserId]
            ,[RoleId])
         VALUES
-           ('{User2Id}', '{ManagerRoleId}');");
+           ('{User1Id}', '{ManagerRoleId}');");
 
         }
 

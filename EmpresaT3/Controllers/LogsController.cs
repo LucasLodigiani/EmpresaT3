@@ -8,10 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using EmpresaT3.Areas.Identity.Data;
 using EmpresaT3.Models;
 using Microsoft.AspNetCore.Authorization;
+using EmpresaT3.Core;
 
 namespace EmpresaT3.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = $"{Constants.Roles.Administrator},{Constants.Roles.Manager}")]
     public class LogsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -24,25 +25,41 @@ namespace EmpresaT3.Controllers
         // GET: Logs
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Logs.OrderByDescending(s => s.Id).ToListAsync());
+            try
+            {
+                return View(await _context.Logs.OrderByDescending(s => s.Id).ToListAsync());
+            }
+            catch (Exception)
+            {
+                return NotFound("Error");
+            }
+            
         }
 
         // GET: Logs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Logs == null)
+            try
             {
-                return NotFound();
-            }
+                if (id == null || _context.Logs == null)
+                {
+                    return NotFound();
+                }
 
-            var logs = await _context.Logs
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (logs == null)
+                var logs = await _context.Logs
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (logs == null)
+                {
+                    return NotFound();
+                }
+
+                return View(logs);
+            }
+            catch (Exception)
             {
-                return NotFound();
+                return NotFound("Error");
             }
-
-            return View(logs);
+            
         }
 
         // POST: Logs/Delete/5
@@ -50,18 +67,26 @@ namespace EmpresaT3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Logs == null)
+            try
             {
-                return Problem("Entity set 'ApplicationDbContext.Category'  is null.");
-            }
-            var logs = await _context.Logs.FindAsync(id);
-            if (logs != null)
-            {
-                _context.Logs.Remove(logs);
-            }
+                if (_context.Logs == null)
+                {
+                    return Problem("Entity set 'ApplicationDbContext.Category'  is null.");
+                }
+                var logs = await _context.Logs.FindAsync(id);
+                if (logs != null)
+                {
+                    _context.Logs.Remove(logs);
+                }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+                return NotFound("Error");
+            }
+            
         }
 
         private bool LogsExists(int id)
